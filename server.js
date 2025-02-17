@@ -15,6 +15,29 @@ const friends = [
   }
 ];
 
+app.use((req, res, next) => { 
+  const start = Date.now();
+  next();
+  const delta = Date.now() - start;
+  console.log(`${req.method} request for ${req.url}${delta}ms`);
+});
+
+app.use(express.json());
+
+app.post('/friends', (req, res) => {
+
+  if (!req.body.name) {
+    res.status(400).json({error: "Name is required"});
+  }
+  const newFriend = {
+    name: req.body,
+    id: friends.length
+  };
+  friends.push(newFriend);
+
+  res.json(newFriend); 
+})
+
 app.get('/friends', (req, res) => {
   res.json(friends);
 })
